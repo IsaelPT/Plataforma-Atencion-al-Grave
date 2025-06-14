@@ -13,3 +13,8 @@ venv/
 
 # Ignore VSCode settings
 .vscode/
+
+# Archivos de configuración de Docker para desarrollo
+SimUci/docker-compose.dev.yml
+SimUci/Dockerfile.dev
+SimUci/levantarLaApp.txt
