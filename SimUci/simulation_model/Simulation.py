@@ -1,6 +1,6 @@
 import simpy
 
-from SimUci.helpers import distribution_helpers
+from helpers import distribution_helpers
 
 
 class Simulation:

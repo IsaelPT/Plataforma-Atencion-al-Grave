@@ -1,9 +1,8 @@
 import simpy
 
-from SimUci.simulation_model.Simulation import Simulation
-from SimUci.simulation_model.Experiment import Experiment
-
-from SimUci.helpers import distribution_helpers
+from simulation_model.Simulation import Simulation
+from simulation_model.Experiment import Experiment
+from helpers import distribution_helpers
 
 import pandas as pd
 

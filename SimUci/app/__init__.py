@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from SimUci.app.routes.simulation_router import simulation_router
+from app.routes.simulation_router import simulation_router
 
 app = FastAPI()
 

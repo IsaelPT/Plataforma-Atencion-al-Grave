@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Set workdir
-WORKDIR /app
+WORKDIR /SimUci
 
 # Copia los archivos de requerimientos
 COPY requirements.txt ./requirements.txt
