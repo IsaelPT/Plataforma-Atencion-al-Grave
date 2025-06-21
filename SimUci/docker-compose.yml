@@ -13,3 +13,29 @@ services:
       - ./data:/SimUci/data
       - ./.env:/SimUci/.env
     restart: unless-stopped
+    depends_on:
+      - mongo
+    networks:
+      - simuci-net
+
+  mongo:
+    image: mongo:7
+    container_name: simuci-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+      - MONGO_INITDB_DATABASE=simuci_db
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - simuci-net
+
+volumes:
+  mongo_data:
+
+networks:
+  simuci-net:
+    driver: bridge

@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Body, Query
+
 from helpers.experiment_helpers import multiple_replication
+
 from simulation_model.Experiment import Experiment
 from preidiction_model.Prediction import Prediction
+
 from app.models.Pacient import Pacient
 from app.models.Sim_Pacient import SimPacient
 from app.models.Predict_Pacient import Predict_Pacient
+from app.models.Simulation import Simulation
+
 from stadistical_comparison.Wilcoxon import Wilcoxon
 from stadistical_comparison.Friedman import Friedman
 from stadistical_comparison.StatsUtils import StatsUtils
@@ -16,7 +21,7 @@ from typing import List
 
 simulation_router = APIRouter(prefix="/simulation")
 
-@simulation_router.post("", response_model=List[SimPacient])
+@simulation_router.post("", response_model=Simulation)
 async def simulate(pacient: Pacient) -> list[dict]:
     # Realizar experimento
     experiment: Experiment = Experiment(
@@ -38,7 +43,10 @@ async def simulate(pacient: Pacient) -> list[dict]:
     sim_pacients = df[[
         "tiempo_pre_vam", "tiempo_vam", "tiempo_post_vam", "estadia_uci", "estadia_post_uci"
     ]].to_dict(orient="records")
-    return sim_pacients
+    
+    data = {"_id" : pacient.id, "sim_pacients": sim_pacients}
+
+    return Simulation(**data)
 
 @simulation_router.post("/wilcoxon")
 async def wilcoxon_test(

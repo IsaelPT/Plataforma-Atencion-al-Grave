@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 
 class Pacient(BaseModel):
+    id: int = Field(..., alias="_id")
     edad: int = Field(..., ge=14, le=90)
     diag1: int = Field(..., ge=0, le=40)
     diag2: int = Field(..., ge=0, le=40)
