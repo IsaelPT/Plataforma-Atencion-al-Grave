@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # Cargar variables de entorno desde la ruta absoluta del .env
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENV_PATH = os.path.join(BASE_DIR, '..', '.env')
+ENV_PATH = os.path.join(BASE_DIR, "..", ".env")
 load_dotenv(dotenv_path=os.path.abspath(ENV_PATH))
 
 MONGO_HOST = os.getenv("MONGO_HOST")

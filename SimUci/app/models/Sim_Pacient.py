@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class SimPacient(BaseModel):
     tiempo_pre_vam: int = Field(...)
     tiempo_vam: int = Field(...)

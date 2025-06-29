@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class Pacient(BaseModel):
     id: int = Field(..., alias="_id")
     edad: int = Field(..., ge=14, le=90)
@@ -15,4 +16,3 @@ class Pacient(BaseModel):
     tmp_est_pre_uti: int = Field(...)
     por: int = Field(...)
     n_reps: int = Field(...)
-
