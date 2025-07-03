@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from helpers.experiment_helpers import multiple_replication
 
 from simulation_model.Experiment import Experiment
-from preidiction_model.Prediction import Prediction
+from prediction_model.Prediction import Prediction
 
 from app.models.Patient import Patient
 from app.models.Sim_Patient import SimPatient
@@ -23,10 +23,12 @@ from typing import List
 
 simulation_router = APIRouter(prefix="/simulation")
 
+
 @simulation_router.post("", response_model=Simulation)
 async def simulate(patient: Patient):
     # Realizar experimento
     experiment: Experiment = Experiment(
+<<<<<<< HEAD
         patient.edad, patient.diag1, patient.diag2, patient.diag3, patient.diag4,
         patient.apache, patient.ins_res, patient.vent_art, patient.est_uti,
         patient.tmp_vam, patient.tmp_est_pre_uti, patient.por
@@ -54,17 +56,66 @@ async def simulate(patient: Patient):
         }
     sim = Simulation(**data)
     return JSONResponse(content={"success": True, "data": sim.model_dump(by_alias=True)})
+=======
+        pacient.edad,
+        pacient.diag1,
+        pacient.diag2,
+        pacient.diag3,
+        pacient.diag4,
+        pacient.apache,
+        pacient.ins_res,
+        pacient.vent_art,
+        pacient.est_uti,
+        pacient.tmp_vam,
+        pacient.tmp_est_pre_uti,
+        pacient.por,
+    )
+
+    df: pd.DataFrame = multiple_replication(experiment, pacient.n_reps)
+    # Renombrar columnas para que coincidan con el modelo SimPacient
+    df = df.rename(
+        columns={
+            "Tiempo Pre VAM": "tiempo_pre_vam",
+            "Tiempo VAM": "tiempo_vam",
+            "Tiempo Post VAM": "tiempo_post_vam",
+            "Estadia UCI": "estadia_uci",
+            "Estadia Post UCI": "estadia_post_uci",
+        }
+    )
+    # Solo devolver los campos del modelo SimPacient
+    sim_pacients = df[
+        [
+            "tiempo_pre_vam",
+            "tiempo_vam",
+            "tiempo_post_vam",
+            "estadia_uci",
+            "estadia_post_uci",
+        ]
+    ].to_dict(orient="records")
+
+    data = {"_id": pacient.id, "sim_pacients": sim_pacients}
+
+    return Simulation(**data)
+>>>>>>> 9b2a87593ada34d9b3ed28031cbf716efb1199a7
+
 
 @simulation_router.post("/wilcoxon")
 async def wilcoxon_test(
+<<<<<<< HEAD
     x: List[SimPatient],
     y: List[SimPatient],
     field: str = Query(..., description="Campo a comparar (ej: tiempo_vam)")
+=======
+    x: List[SimPacient],
+    y: List[SimPacient],
+    field: str = Query(..., description="Campo a comparar (ej: tiempo_vam)"),
+>>>>>>> 9b2a87593ada34d9b3ed28031cbf716efb1199a7
 ):
     x_values = [getattr(p, field) for p in x]
     y_values = [getattr(p, field) for p in y]
     wilcoxon_test: Wilcoxon = Wilcoxon()
     wilcoxon_test.test(x_values, y_values)
+<<<<<<< HEAD
     return JSONResponse(content={
         "success": True,
         "statistic": wilcoxon_test.statistic,
@@ -75,12 +126,22 @@ async def wilcoxon_test(
 async def friedman_test(
     samples: List[List[SimPatient]],
     field: str = Query(..., description="Campo a comparar (ej: tiempo_vam)")
+=======
+    return {"statistic": wilcoxon_test.statistic, "p_value": wilcoxon_test.p_value}
+
+
+@simulation_router.post("/friedman")
+async def friedman_test(
+    samples: List[List[SimPacient]],
+    field: str = Query(..., description="Campo a comparar (ej: tiempo_vam)"),
+>>>>>>> 9b2a87593ada34d9b3ed28031cbf716efb1199a7
 ):
     data = []
     for sample in samples:
         data.append([getattr(p, field) for p in sample])
     friedman = Friedman()
     friedman.test(*data)
+<<<<<<< HEAD
     return JSONResponse(content={
         "success": True,
         "statistic": friedman.statistic,
@@ -140,13 +201,37 @@ async def stats_for_simulation(simulation: Simulation):
         "success": True,
         "result": response_data
     })
+=======
+    return {"statistic": friedman.statistic, "p_value": friedman.p_value}
+
+
+@simulation_router.post("/intervals-confidence")
+async def confidence_intervals(
+    data: list[float] = Body(
+        ..., description="Lista de datos para calcular los intervalos de confianza"
+    ),
+):
+    mean: float = np.mean(data)
+    std: float = np.std(data, ddof=1)
+    result: tuple = StatsUtils.confidenceinterval(mean, std, len(data))
+    return {
+        "lower_bound": result[0],
+        "upper_bound": result[1],
+    }
+>>>>>>> 9b2a87593ada34d9b3ed28031cbf716efb1199a7
+
 
 @simulation_router.post("/predict")
 async def predict(patient: Predict_Patient):
     model = Prediction()
+<<<<<<< HEAD
     prediction = model.predict(patient)
     return JSONResponse(content={
         "success": True,
         "predicted_class": prediction[0],
         "predicted_probability": prediction[1]
     })
+=======
+    prediction = model.predict(pacient)
+    return {"predicted_class": prediction[0], "predicted_probability": prediction[1]}
+>>>>>>> 9b2a87593ada34d9b3ed28031cbf716efb1199a7

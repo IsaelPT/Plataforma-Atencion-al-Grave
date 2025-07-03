@@ -2,13 +2,26 @@ import os
 
 from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+dotenv_path = os.path.join(os.path.dirname(__file__), "..", ".env")
 load_dotenv(dotenv_path)
 
+
 class Experiment:
-    def __init__(self, edad: int, diagnostico_ingreso1: int, diagnostico_ingreso2: int, diagnostico_ingreso3: int,
-                 diagnostico_ingreso4: int, apache: int, insuficiencia_respiratoria: int, ventilacion_artificial: int,
-                 estadia_uti: int, tiempo_vam: int, tiempo_estadia_pre_uti: int, porciento: int = 10):
+    def __init__(
+        self,
+        edad: int,
+        diagnostico_ingreso1: int,
+        diagnostico_ingreso2: int,
+        diagnostico_ingreso3: int,
+        diagnostico_ingreso4: int,
+        apache: int,
+        insuficiencia_respiratoria: int,
+        ventilacion_artificial: int,
+        estadia_uti: int,
+        tiempo_vam: int,
+        tiempo_estadia_pre_uti: int,
+        porciento: int = 10,
+    ):
         self.edad = edad
         self.diagn1 = diagnostico_ingreso1
         self.diagn2 = diagnostico_ingreso2

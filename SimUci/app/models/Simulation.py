@@ -3,6 +3,7 @@ from app.models.Sim_Patient import SimPatient
 from typing import Optional
 from bson import ObjectId
 
+
 class Simulation(BaseModel):
     id: Optional[str] = Field(None, alias="_id")
     id_pacient: Optional[str] = Field(None)

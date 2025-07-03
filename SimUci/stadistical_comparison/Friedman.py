@@ -1,5 +1,6 @@
 from scipy.stats import friedmanchisquare
 
+
 class Friedman:
     def __init__(self):
         self.statistic: float = 0

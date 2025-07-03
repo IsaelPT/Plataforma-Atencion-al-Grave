@@ -7,14 +7,22 @@ from helpers import distribution_helpers
 import pandas as pd
 
 
-
 def single_run(experiment) -> dict[str, int]:
     env = simpy.Environment()
     experiment.init_results_variables()
-    cluster = distribution_helpers.clustering(experiment.edad, experiment.diagn1, experiment.diagn2,
-                                        experiment.diagn3, experiment.diagn4, experiment.apache,
-                                        experiment.insuf_resp, experiment.va, experiment.estadia_uti,
-                                        experiment.tiempo_vam, experiment.tiempo_pre_uti)
+    cluster = distribution_helpers.clustering(
+        experiment.edad,
+        experiment.diagn1,
+        experiment.diagn2,
+        experiment.diagn3,
+        experiment.diagn4,
+        experiment.apache,
+        experiment.insuf_resp,
+        experiment.va,
+        experiment.estadia_uti,
+        experiment.tiempo_vam,
+        experiment.tiempo_pre_uti,
+    )
     simulacion = Simulation(experiment, cluster)
     env.process(simulacion.uci(env))
     env.run()
