@@ -1,0 +1,67 @@
+version: '3.8'
+services:
+  simuci:
+    build:
+      context: ./SimUci
+      dockerfile: Dockerfile
+    container_name: simuci-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./SimUci/data:/SimUci/data
+      - ./SimUci/.env:/SimUci/.env
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    networks:
+      - plataforma-atencion-grave
+
+  api_gateway:
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SIMUCI_MICROSERVICE_URL=http://simuci:8000
+    depends_on:
+      - simuci
+    networks:
+      - plataforma-atencion-grave
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api_gateway
+    networks:
+      - plataforma-atencion-grave
+
+  mongo:
+    image: mongo:7
+    container_name: simuci-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=1234
+      - MONGO_INITDB_DATABASE=simuci_db
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - plataforma-atencion-grave
+
+volumes:
+  mongo_data:
+
+networks:
+  plataforma-atencion-grave:
+    driver: bridge
