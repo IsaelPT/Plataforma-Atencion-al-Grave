@@ -1,38 +1,23 @@
 import { useState } from "react";
+import { labels, tipoVentilacionOptions, diagPreuciOptions, insufRespOptions } from "./simulationFormConstants";
 
-const labels = {
-  edad: "Edad",
-  apache: "APACHE",
-  insResp: "Insuf. Resp.",
-  ventArt: "Vent. Art.",
-  diag1: "D. Ing. 1",
-  diag2: "D. Ing. 2",
-  diag3: "D. Ing. 3",
-  diag4: "D. Ing. 4",
-  diagEgr2: "D. Egr. 2",
-  estUti: "Est. UCI",
-  tmpVam: "VAM",
-  tmpEstPreUti: "Pre UCI",
-  porciento: "%",
-  nReps: "Corridas"
-};
-
-export default function SimulationForm({ onSubmit, patient }) {
+export default function SimulationForm({ onSubmit, patient, onClose }) {
   const [form, setForm] = useState({
-    edad: patient?.edad || "",
-    apache: patient?.apache || "",
-    insResp: "",
-    ventArt: "",
-    diag1: "",
-    diag2: "",
-    diag3: "",
-    diag4: "",
-    diagEgr2: "",
-    estUti: "",
-    tmpVam: "",
-    tmpEstPreUti: "",
-    porciento: "",
-    nReps: "",
+    id: patient?._id ?? 0,
+    edad: patient?.edad ?? 14,
+    apache: patient?.apache ?? 5,
+    insResp: patient?.ins_res ?? 0,
+    ventArt: patient?.vent_ar ?? 0,
+    diag1: patient?.diag1 ?? 0,
+    diag2: patient?.diag2 ?? 0,
+    diag3: patient?.diag3 ?? 0,
+    diag4: patient?.diag4 ?? 0,
+    diagEgr2: 0,
+    estUti: patient?.est_uti ?? 0,
+    tmpVam: patient?.tmp_vam ?? 24,
+    tmpEstPreUti: patient?.tmp_est_pre_uti ?? 0,
+    porciento: patient?.por ?? 10,
+    nReps: patient?.n_reps ?? 100,
   });
 
   const handleChange = e => {
@@ -47,6 +32,8 @@ export default function SimulationForm({ onSubmit, patient }) {
 
   return (
     <form className="w-full" onSubmit={e => { e.preventDefault(); onSubmit(form); }}>
+      {/* Input oculto para el id del patient */}
+      <input type="hidden" name="id" value={form.id} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {/* Columna 1 */}
         <div className="flex flex-col gap-4">
@@ -61,21 +48,19 @@ export default function SimulationForm({ onSubmit, patient }) {
           <div>
             <label htmlFor="insResp" className="text-black mb-1 block text-base font-semibold tracking-wide">{labels.insResp}</label>
             <select id="insResp" name="insResp" required className={selectClass} value={form.insResp} onChange={handleChange}>
-              <option value="" disabled selected>Seleccione...</option>
-              <option value="1">T1</option>
-              <option value="2">T2</option>
-              <option value="3">T3</option>
-              <option value="4">T4</option>
-              <option value="5">T5</option>
+              <option value= {0} disabled>Seleccione...</option>
+              {Object.entries(insufRespOptions).map(([key, value]) => (
+                <option key={key} value={key}>{value}</option>
+              ))}
             </select>
           </div>
           <div>
             <label htmlFor="ventArt" className="text-black mb-1 block text-base font-semibold tracking-wide">{labels.ventArt}</label>
             <select id="ventArt" name="ventArt" required className={selectClass} value={form.ventArt} onChange={handleChange}>
-              <option value="" disabled selected>Seleccione...</option>
-              <option value="1">Inv.</option>
-              <option value="2">No Inv.</option>
-              <option value="3">Mixta</option>
+              <option value= {0} disabled>Seleccione...</option>
+              {Object.entries(tipoVentilacionOptions).map(([key, value]) => (
+                <option key={key} value={key}>{value}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -85,12 +70,10 @@ export default function SimulationForm({ onSubmit, patient }) {
             <div key={key}>
               <label htmlFor={key} className="text-black mb-1 block text-base font-semibold tracking-wide">{labels[key]}</label>
               <select id={key} name={key} required className={selectClass} value={form[key]} onChange={handleChange}>
-                <option value="" disabled selected>Seleccione...</option>
-                <option value="1">Diagnóstico 1</option>
-                <option value="2">Diagnóstico 2</option>
-                <option value="3">Diagnóstico 3</option>
-                <option value="4">Diagnóstico 4</option>
-                <option value="5">Diagnóstico 5</option>
+                <option value= {0} disabled>Seleccione...</option>
+                {Object.entries(diagPreuciOptions).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
               </select>
             </div>
           ))}
@@ -100,12 +83,10 @@ export default function SimulationForm({ onSubmit, patient }) {
           <div>
             <label htmlFor="diagEgr2" className="text-black mb-1 block text-base font-semibold tracking-wide">{labels.diagEgr2}</label>
             <select id="diagEgr2" name="diagEgr2" required className={selectClass} value={form.diagEgr2} onChange={handleChange}>
-              <option value="" disabled selected>Seleccione...</option>
-              <option value="1">Diagnóstico 1</option>
-              <option value="2">Diagnóstico 2</option>
-              <option value="3">Diagnóstico 3</option>
-              <option value="4">Diagnóstico 4</option>
-              <option value="5">Diagnóstico 5</option>
+              <option value= {0} disabled>Seleccione...</option>
+              {Object.entries(diagPreuciOptions).map(([k, v]) => (
+                <option key={k} value={k}>{v}</option>
+              ))}
             </select>
           </div>
           <div>
@@ -133,12 +114,20 @@ export default function SimulationForm({ onSubmit, patient }) {
           <input id="nReps" name="nReps" type="number" min={1} required className={fieldClass + " text-center"} value={form.nReps} onChange={handleChange} />
         </div>
       </div>
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6 gap-4">
         <button
           type="submit"
           className="px-8 py-2 rounded-lg bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600 text-white font-bold shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50"
         >
           Simular
+        </button>
+        <button
+          type="button"
+          style={{ background: '#6C757D' }}
+          className="px-8 py-2 rounded-lg text-white font-bold shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-400 focus:ring-opacity-50"
+          onClick={onClose}
+        >
+          Volver
         </button>
       </div>
     </form>

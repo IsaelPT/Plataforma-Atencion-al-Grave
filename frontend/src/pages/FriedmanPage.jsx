@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 export default function FriedmanPage() {
   const [patients] = useState([
-    { id: '1', name: 'Paciente 1' },
-    { id: '2', name: 'Paciente 2' },
+    { id: '1', name: 'Patient 1' },
+    { id: '2', name: 'Patient 2' },
   ]);
   const [simulations] = useState([
     { id: 'sim1', name: 'Simulación 1' },

@@ -1,0 +1,13 @@
+FROM node:20-alpine
+
+WORKDIR /app
+RUN apk add --no-cache python3 make g++
+RUN npm install -g @rollup/rollup-linux-x64-musl
+COPY package*.json ./
+# Forzar el registro oficial de npm y reintentar instalación en caso de fallo
+RUN npm config set registry https://registry.npmjs.org/ \
+    && (npm install --force || npm install --force)
+COPY . .
+
+EXPOSE 3000
+CMD ["npm", "run", "dev", "--", "--host"]

@@ -10,7 +10,7 @@ export default function TestSelector({ columns, value, onChange }) {
         value={value}
         onChange={e => onChange(e.target.value)}
       >
-        <option value="">Seleccione columna</option>
+        <option value="" disabled>Seleccione columna</option>
         {columns.map(col => (
           <option key={col} value={col}>{col}</option>
         ))}
